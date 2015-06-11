@@ -210,17 +210,17 @@ def arrowPlotData(plotDict,
             plotGenerator[u] = []
             plotGeneratorErr[u] = []
 
-        mean = {}
-        sem = {}
+        # Mean and SEM in the same dictionary 
+        stats = {}
 
         for c in desiredCourses:
             for q in questionDictKeys:        
                 plotGenerator[c].append(plotDict[q][c][0])
                 plotGeneratorErr[c].append(plotDict[q][c][1])
-            mean.update({c: plotGenerator[c]})
-            sem.update({c: plotGeneratorErr[c]})
 
-        return mean,sem
+            stats.update({c:[plotGenerator[c],plotGeneratorErr[c]]})
+
+        return stats
 
 def individualStudents(allData,
                        desiredCourses,

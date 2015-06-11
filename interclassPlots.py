@@ -166,7 +166,12 @@ def arrowPlot(val,
 	pylab.title(filename, fontsize=20)
 
 	pylab.savefig(rawPath+filename,dpi=300)
-	pylab.close()    
+	pylab.close()
+
+	if valerr is None:
+		print('Arrow plot (no error bars) saved in file: "{0}.png"'.format(filename))
+	else:
+		print('Arrow plot with error bars saved in file: "{0}.png"'.format(filename))
 
 
 def determine_facecolor(score):
