@@ -10,7 +10,7 @@ def arrowPlot(val,
 		title = filename
 
 	if rawPath is None:
-		rawpath = '/phd/TA/Year 3 - InterClass/python/export/'
+		rawPath = '/phd/TA/Year 3 - InterClass/python/export/'
 
 	# These are the errors set up as strings
 
@@ -21,7 +21,6 @@ def arrowPlot(val,
 
 	pylab.figure(figsize=(12,6))
 	ax = pylab.subplot(111)
-
 
 	# Create the boxes for each of the subjects
 
