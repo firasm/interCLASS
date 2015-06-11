@@ -2,15 +2,15 @@ import pylab
 
 def arrowPlot(val,
 			  valerr=None,
-			  title=None,
+			  plotTitle=None,
 			  rawPath=None,
 			  filename='template.png'):
 
-	if title is None:
-		title = filename
+	if plotTitle is None:
+		plotTitle = filename
 
 	if rawPath is None:
-		rawPath = '/phd/TA/Year 3 - InterClass/python/export/'
+		rawPath = '/phd/TA/Year 3 - InterClass/python/export/arrowPlots/'
 
 	# These are the errors set up as strings
 
@@ -163,7 +163,7 @@ def arrowPlot(val,
 
 	# Export and save the image
 	pylab.axis('off')
-	pylab.title(filename, fontsize=20)
+	pylab.title(plotTitle, fontsize=20)
 
 	pylab.savefig(rawPath+filename,dpi=300)
 	pylab.close()

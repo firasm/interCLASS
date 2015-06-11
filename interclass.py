@@ -218,7 +218,14 @@ def arrowPlotData(plotDict,
                 plotGenerator[c].append(plotDict[q][c][0])
                 plotGeneratorErr[c].append(plotDict[q][c][1])
 
-            stats.update({c:[plotGenerator[c],plotGeneratorErr[c]]})
+            # This syntax is a bit confusing, but it's worth doing it this way
+            # This is a dictionary of dictionaries
+            # The top level dictionary has keys corresponding to courses
+            # the next level dictionary has keys corresponding to mean or SEM
+            # the values of this dictionary is a list of means and SEMs
+
+            stats.update({c:{'mean':plotGenerator[c]}})
+            stats[c].update({'sem':plotGeneratorErr[c]})
 
         return stats
 
