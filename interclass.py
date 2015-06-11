@@ -199,7 +199,7 @@ def arrowPlotData(plotDict,
             mean.append(plotDict[q][desiredCourses[1]][0] -\
                         plotDict[q][desiredCourses[0]][0])
             
-        return mean
+        return {'mean':mean}
 
     else:
         # Initializing the dictionaries
