@@ -65,7 +65,7 @@ def checkQuestions(dataFrame,
             x=dataFrame[q]
         except:
             check_questions = False
-            print('{0} failed {1}'.format(dl,q))
+            print('{0} failed'.format(q))
 
     if check_questions:
         print('#### {0} #### \n All systems go, question statements are validated\n'.format(fname))
@@ -88,16 +88,17 @@ def likertReplace(dataFrame,
     '<Unanswered>'          = numpy.nan
     """
     if likertPhrase is None:
-        likertPhrase = ['Strongly Disagree', 
-                        'Disagree', 
-                        'Neutral', 
-                        'Agree', 
-                        'Strongly Agree',
-                        '<Unanswered>']
+        likertPhrase = ["Strongly Disagree", 
+                        "Disagree", 
+                        "Neutral", 
+                        "Agree", 
+                        "Strongly Agree",
+                        "I don't understand the question",
+                        "<Unanswered>"]
 
     # Choose Default scoring of the likert scale
     if scores is None:     
-        scores = [-1,-1,0,1,1,numpy.nan]
+        scores = [-1,-1,0,1,1,numpy.nan,numpy.nan]
 
     # Replace likert scale with scores as specified    
     dataFrame = dataFrame.replace(to_replace=likertPhrase, value=scores)
