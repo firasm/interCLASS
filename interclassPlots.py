@@ -165,7 +165,7 @@ def arrowPlot(val,
 	pylab.axis('off')
 	pylab.title(plotTitle, fontsize=20)
 
-	pylab.savefig(rawPath+filename,dpi=300)
+	pylab.savefig(rawPath+filename,dpi=300,transparent=True)
 	pylab.close()
 
 	if valerr is None:
