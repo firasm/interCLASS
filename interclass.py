@@ -232,7 +232,8 @@ def arrowPlotData(plotDict,
 
 def individualStudents(allData,
                        desiredCourses,
-                       questionValue):
+                       questionValue,
+                       rawData = False):
 
     """
     Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), and a single question (questionValue) to return the difference between invidual students as a dictionary
@@ -275,13 +276,16 @@ def individualStudents(allData,
     for s,pre,post in zip(list(tmp[0].index),list(tmp[0]),list(tmp[1])):
 
         comparisons[s] = [pre,post]
+
+    if rawData:
+        return comparisons
+
+    else:
         
-        
-    # Find out the number of students doing one thing or another
-    
-    diff = defaultdict(int)
-    for l in comparisons.values():
-        diff[str(l)] += 1    
+        # Find out the number of students doing one thing or another
+        diff = defaultdict(int)
+        for l in comparisons.values():
+            diff[str(l)] += 1    
 
     return diff
 
