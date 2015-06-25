@@ -203,7 +203,8 @@ def determine_facecolor(score):
 def firasPlot(individualDataDict,
 			  yaxislabel,
 			  xaxislabel,
-			  graphType=None):
+			  graphType=None,
+			  colormap = 'YlOrRd'):
 	'''This produces the bubble plots '''
 
 	xL = []
@@ -212,6 +213,13 @@ def firasPlot(individualDataDict,
 	colour = []
 
 	areaScalingFactor = 1.7E4
+
+	# Plot the y=x line
+
+	pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4,color='g')
+	pylab.xlabel(xaxislabel,fontsize=16)
+	pylab.ylabel(yaxislabel,fontsize=16)
+	pylab.text(1.5,1.2,'No-Change line',fontsize=12)
 
 	for it,val in individualDataDict.iteritems():
 
@@ -233,13 +241,15 @@ def firasPlot(individualDataDict,
 			except ValueError: # excludes all blank keys
 				continue		
 
-			pylab.text(coord[0],
-					   coord[1],
-					   val,
-					   size=13,
-					   horizontalalignment='center',
-					   verticalalignment='center',
-					   color='w')  		
+			if val > 0:
+
+				pylab.text(coord[0],
+						   coord[1],
+						   val,
+						   size=13,
+						   horizontalalignment='center',
+						   verticalalignment='center',
+						   color='w')  		
 
 		sct = pylab.scatter(xL, 
 							yL, 
@@ -252,45 +262,31 @@ def firasPlot(individualDataDict,
 		pylab.locator_params(axis = 'x', nbins = 6)
 		pylab.locator_params(axis = 'y', nbins = 6)
 
-		# Plot the y=x line
-
-		pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
-		pylab.xlabel(xaxislabel,fontsize=16)
-		pylab.ylabel(yaxislabel,fontsize=16)
-		pylab.text(1.2,1,'No-Change line',fontsize=12)
-
-
 	elif graphType == 'heatMap':
 		heatmap = numpy.empty(shape=[6,6])*numpy.nan
 
 		for xcoord,ycoord,areaVal in zip(xL,yL,area):
-			heatmap[ycoord,xcoord] = 100*areaVal / areaScalingFactor
-
-			pylab.imshow(heatmap,
-						 interpolation='None',
-						 origin='lower',
-						 cmap='YlOrRd')
-
-		for xcoord,ycoord,areaVal in zip(xL,yL,area):
+			# Get back the number of students
+			n = areaVal*sum(individualDataDict.values()) / areaScalingFactor
+			heatmap[ycoord,xcoord] = n
 
 			pylab.text(xcoord,
 						ycoord,
-						math.trunc(100.*areaVal / areaScalingFactor),
+						math.trunc(n),
 						size=13,
 						horizontalalignment='center',
 						verticalalignment='center',
 						color='k') 
+		pylab.imshow(heatmap,
+					 interpolation='None',
+					 origin='lower',
+					 cmap=colormap)			
 
-		pylab.colorbar()
+		#pylab.colorbar()
 		pylab.xlabel(xaxislabel,fontsize=16)
 		pylab.ylabel(yaxislabel,fontsize=16)
 
-		# Plot the y=x line
 
-		pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
-		pylab.xlabel(xaxislabel,fontsize=16)
-		pylab.ylabel(yaxislabel,fontsize=16)
-		pylab.text(1.5,1.2,'No-Change line',fontsize=12)
 
 
 		# Set the axis limits
