@@ -1,4 +1,6 @@
 import pylab
+import math
+import numpy
 
 def arrowPlot(val,
 			  valerr=None,
@@ -17,7 +19,7 @@ def arrowPlot(val,
 	if valerr is None:
 		stringError = ['' for err in val]
 	else:
-		stringError = ['+/- '+str(err) for err in valerr]    	
+		stringError = ['+/- '+str(err) for err in valerr]		
 
 	pylab.figure(figsize=(12,6))
 	ax = pylab.subplot(111)
@@ -25,22 +27,22 @@ def arrowPlot(val,
 	# Create the boxes for each of the subjects
 
 	ann = ax.annotate("Chemistry",
-	                  xy=(0.30, 0.4), xycoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w")
-	                  )
+					  xy=(0.30, 0.4), xycoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w")
+					  )
 
 	ann2 = ax.annotate("Biology",
-	                  xy=(0.5, 0.82), xycoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w")
-	                  )
+					  xy=(0.5, 0.82), xycoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w")
+					  )
 
 	ann3 = ax.annotate("Physics",
-	                  xy=(0.7, 0.4), xycoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w")
-	                  )
+					  xy=(0.7, 0.4), xycoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w")
+					  )
 	pylab.xlim(0,1)
 	pylab.ylim(0,1)
 	pylab.grid()
@@ -50,76 +52,76 @@ def arrowPlot(val,
 
 	# Chem to Bio
 	ax.annotate("",
-	                  xy=(.43, 0.83),xycoords='data',
-	                  xytext=(0.3, 0.47), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(.43, 0.83),xycoords='data',
+					  xytext=(0.3, 0.47), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3",
+									  fc="w"), 
+					  )
 
 	# Bio to Chem
 	ax.annotate("",
-	                  xy=(0.3, 0.47),xycoords='data',
-	                  xytext=(.43, 0.83), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(0.3, 0.47),xycoords='data',
+					  xytext=(.43, 0.83), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3",
+									  fc="w"), 
+					  )
 
 
 	# Bio to Physics
 	ax.annotate("",
-	                  xy=(0.7, 0.47),xycoords='data',
-	                  xytext=(0.57, 0.83), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(0.7, 0.47),xycoords='data',
+					  xytext=(0.57, 0.83), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3",
+									  fc="w"), 
+					  )
 
 	# Physics to Bio
 	ax.annotate("",
-	                  xy=(0.57, 0.83),xycoords='data',
-	                  xytext=(.7, 0.47), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(0.57, 0.83),xycoords='data',
+					  xytext=(.7, 0.47), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3",
+									  fc="w"), 
+					  )
 
 	# Physics to Chem
 	ax.annotate("",
-	                  xy=(0.39, 0.39),xycoords='data',
-	                  xytext=(0.63, 0.39), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(0.39, 0.39),xycoords='data',
+					  xytext=(0.63, 0.39), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3,angleA=-45,angleB=45",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3,angleA=-45,angleB=45",
+									  fc="w"), 
+					  )
 
 	# Chem to Phys
 	ax.annotate("",
-	                  xy=(0.63, 0.39),xycoords='data',
-	                  xytext=(.39, 0.39), textcoords='axes fraction',
-	                  size=20, va="center", ha="center",
-	                  bbox=dict(boxstyle="round", fc="w"),
+					  xy=(0.63, 0.39),xycoords='data',
+					  xytext=(.39, 0.39), textcoords='axes fraction',
+					  size=20, va="center", ha="center",
+					  bbox=dict(boxstyle="round", fc="w"),
 
-	                  arrowprops=dict(arrowstyle="-|>",
-	                                  connectionstyle="angle3,angleA=-45,angleB=45",
-	                                  fc="w"), 
-	                  )
+					  arrowprops=dict(arrowstyle="-|>",
+									  connectionstyle="angle3,angleA=-45,angleB=45",
+									  fc="w"), 
+					  )
 
 	# Creating the annotations on the arrows
 
@@ -178,118 +180,159 @@ def determine_facecolor(score):
 
 	## On a -1,0,1 point scale
 
-    fc ='grey'
-    if score < -0.1:
-        fc = 'red'
-    elif score>=-0.1 and score <0.1:
-        fc = 'orange'
-    elif score >=0.1:
-        fc ='green'
+	fc ='grey'
+	if score < -0.1:
+		fc = 'red'
+	elif score>=-0.1 and score <0.1:
+		fc = 'orange'
+	elif score >=0.1:
+		fc ='green'
 
-    ## On a 5 point scale
-    
-    #fc ='grey'
-    #if score < 3.2:
-    #    fc = 'red'
-    #elif score>=3.2 and score <4.2:
-    #    fc = 'orange'
-    #elif score >=4.2:
-    #    fc ='green'
+	## On a 5 point scale
+	
+	#fc ='grey'
+	#if score < 3.2:
+	#	fc = 'red'
+	#elif score>=3.2 and score <4.2:
+	#	fc = 'orange'
+	#elif score >=4.2:
+	#	fc ='green'
 
-    return fc
+	return fc
 
-### Firas Plots ###
+def firasPlot(individualDataDict,
+			  yaxislabel,
+			  xaxislabel):
+	'''This produces the bubble plots '''
 
-# Currently not really working, but not really used either
+	xL = []
+	yL = []
+	area = [] 
+	colour = []
+
+	for it,val in individualDataDict.iteritems():
+
+		try:
+			coord = [float(g) for g in it.strip('[]').split(',')]
+		except ValueError: # excludes all blank keys
+			continue
+		xL.append(coord[0])
+		yL.append(coord[1])
+		area.append(1.5E4*val/sum(individualDataDict.values()))
+		colour.append('k')
+
+		pylab.text(coord[0],coord[1],
+			 math.trunc(round(100.*val/sum(individualDataDict.values()))),
+			 size=13,horizontalalignment='center',verticalalignment='center',color='w')  
+
+	sct = pylab.scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
+	#sct.set_alpha(0.65)
+
+	pylab.xlim(.5,5.5)
+	pylab.ylim(.5,5.5)
+
+	pylab.locator_params(axis = 'x', nbins = 6)
+	pylab.locator_params(axis = 'y', nbins = 6)
+
+	# Plot the y=x line
+
+	pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
+	pylab.xlabel(xaxislabel,fontsize=16)
+	pylab.ylabel(yaxislabel,fontsize=16)
+	pylab.text(1.2,1,'No-Change line',fontsize=12)
+
+
+
+
 
 """
 
 def chooseData(dataSource = allData,
-               courseList = None,
-               course = None,
-               questionDict = None,
-               question = None):
-    
-    # First get the data for the Course Name (or all data)
-    
-    if course is None:
-        currD = dataSource
-    else:
-        currD = dataSource[dataSource['Course']==course]
-        
-    # Then get the data for the question specified        
-    if question is None:
-        result = currD
-    else:
-        result = currD[questionDict[question]]
-    
-    return result
+			   courseList = None,
+			   course = None,
+			   questionDict = None,
+			   question = None):
+	
+	# First get the data for the Course Name (or all data)
+	
+	if course is None:
+		currD = dataSource
+	else:
+		currD = dataSource[dataSource['Course']==course]
+		
+	# Then get the data for the question specified		
+	if question is None:
+		result = currD
+	else:
+		result = currD[questionDict[question]]
+	
+	return result
 
 def createFirasPlot(pairedQs,
-                    course_interested,
-                    export_filename):
+					course_interested,
+					export_filename):
 
-    for i,q in enumerate(pairedQs.iteritems()):
+	for i,q in enumerate(pairedQs.iteritems()):
 
-        subplot(1,3,i+1)
+		subplot(1,3,i+1)
 
-        # Choosing the data first
+		# Choosing the data first
 
-        A_B = chooseData(allData,
-                         courseList = courseList,
-                         course = course_interested,
-                         questionDict = questions,
-                         question = q[1][0])
+		A_B = chooseData(allData,
+						 courseList = courseList,
+						 course = course_interested,
+						 questionDict = questions,
+						 question = q[1][0])
 
-        B_A = chooseData(allData,
-                         courseList = courseList,
-                         course = course_interested,
-                         questionDict = questions,
-                         question = q[1][1])
+		B_A = chooseData(allData,
+						 courseList = courseList,
+						 course = course_interested,
+						 questionDict = questions,
+						 question = q[1][1])
 
-        # Filtering out data
-        A_B = A_B[A_B>0]
-        B_A = B_A[B_A>0]
+		# Filtering out data
+		A_B = A_B[A_B>0]
+		B_A = B_A[B_A>0]
 
-        gg = zip(A_B,B_A)
+		gg = zip(A_B,B_A)
 
-        xL = []
-        yL = []
-        area = [] 
-        colour = []
+		xL = []
+		yL = []
+		area = [] 
+		colour = []
 
-        for it in Counter(gg):
+		for it in Counter(gg):
 
-            xL.append(it[0])
-            yL.append(it[1])
-            area.append(1e4*Counter(gg)[it]/len(gg))
-            colour.append((it[0] + it[1]))
+			xL.append(it[0])
+			yL.append(it[1])
+			area.append(1e4*Counter(gg)[it]/len(gg))
+			colour.append((it[0] + it[1]))
 
-            text(it[0],it[1],
-                 math.trunc(round(100.*Counter(gg)[it]/len(gg),0)),
-                 size=13,horizontalalignment='center',verticalalignment='center',color='k')    
+			text(it[0],it[1],
+				 math.trunc(round(100.*Counter(gg)[it]/len(gg),0)),
+				 size=13,horizontalalignment='center',verticalalignment='center',color='k')	
 
-        sct = scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
-        sct.set_alpha(0.65)
+		sct = scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
+		sct.set_alpha(0.65)
 
-        xlim(.5,5.5)
-        ylim(.5,5.5)
+		xlim(.5,5.5)
+		ylim(.5,5.5)
 
-        pyplot.locator_params(axis = 'x', nbins = 6)
-        pyplot.locator_params(axis = 'y', nbins = 6)
+		pyplot.locator_params(axis = 'x', nbins = 6)
+		pyplot.locator_params(axis = 'y', nbins = 6)
 
-        xlabel('{0}'.format(q[1][0]),size=16)
-        ylabel('{0}'.format(q[1][1]),size=16)
-        title('{0}'.format(q[0]),size=18)
-        
-        pylab.suptitle(course_interested+'\n \n \n',size=24)
+		xlabel('{0}'.format(q[1][0]),size=16)
+		ylabel('{0}'.format(q[1][1]),size=16)
+		title('{0}'.format(q[0]),size=18)
+		
+		pylab.suptitle(course_interested+'\n \n \n',size=24)
 
-        if i >2:
-            text(6,4,'1 - Strongly disagree \n5- Strongly agree',size=13)
+		if i >2:
+			text(6,4,'1 - Strongly disagree \n5- Strongly agree',size=13)
 
-        savefig('/phd/TA/Year 3 - InterClass/python/export/Firas_plots.pdf')
+		savefig('/phd/TA/Year 3 - InterClass/python/export/Firas_plots.pdf')
 
-    pylab.tight_layout()    
+	pylab.tight_layout()	
 
 
 figsize(12,6)
@@ -297,8 +340,8 @@ figsize(12,6)
 course_interested = 'Biol 121 Pre'
 
 pairedQs = {'Physics and Biology': ['P important for B','B important for P'],
-            'Biology and Chemistry': ['B important for C','C important for B'],
-            'Chemistry and Physics': ['C important for P','P important for C']}
+			'Biology and Chemistry': ['B important for C','C important for B'],
+			'Chemistry and Physics': ['C important for P','P important for C']}
 
 course_interested = 'Biol 121 Pre'
 createFirasPlot(pairedQs,course_interested,course_interested+'FirasPlot.pdf')
