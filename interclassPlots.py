@@ -202,13 +202,16 @@ def determine_facecolor(score):
 
 def firasPlot(individualDataDict,
 			  yaxislabel,
-			  xaxislabel):
+			  xaxislabel,
+			  graphType=None):
 	'''This produces the bubble plots '''
 
 	xL = []
 	yL = []
 	area = [] 
 	colour = []
+
+	areaScalingFactor = 1.7E4
 
 	for it,val in individualDataDict.iteritems():
 
@@ -218,30 +221,82 @@ def firasPlot(individualDataDict,
 			continue
 		xL.append(coord[0])
 		yL.append(coord[1])
-		area.append(1.5E4*val/sum(individualDataDict.values()))
+		area.append(areaScalingFactor*val/sum(individualDataDict.values()))
 		colour.append('k')
 
-		pylab.text(coord[0],coord[1],
-			 math.trunc(round(100.*val/sum(individualDataDict.values()))),
-			 size=13,horizontalalignment='center',verticalalignment='center',color='w')  
+	if graphType is None:
 
-	sct = pylab.scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
-	#sct.set_alpha(0.65)
+		for it,val in individualDataDict.iteritems():
 
+			try:
+				coord = [float(g) for g in it.strip('[]').split(',')]
+			except ValueError: # excludes all blank keys
+				continue		
+
+			pylab.text(coord[0],
+					   coord[1],
+					   val,
+					   size=13,
+					   horizontalalignment='center',
+					   verticalalignment='center',
+					   color='w')  		
+
+		sct = pylab.scatter(xL, 
+							yL, 
+							s=area, 
+							c = colour, 
+							linewidths=2, 
+							edgecolor='k')
+		#sct.set_alpha(0.65)
+
+		pylab.locator_params(axis = 'x', nbins = 6)
+		pylab.locator_params(axis = 'y', nbins = 6)
+
+		# Plot the y=x line
+
+		pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
+		pylab.xlabel(xaxislabel,fontsize=16)
+		pylab.ylabel(yaxislabel,fontsize=16)
+		pylab.text(1.2,1,'No-Change line',fontsize=12)
+
+
+	elif graphType == 'heatMap':
+		heatmap = numpy.empty(shape=[6,6])*numpy.nan
+
+		for xcoord,ycoord,areaVal in zip(xL,yL,area):
+			heatmap[ycoord,xcoord] = 100*areaVal / areaScalingFactor
+
+			pylab.imshow(heatmap,
+						 interpolation='None',
+						 origin='lower',
+						 cmap='YlOrRd')
+
+		for xcoord,ycoord,areaVal in zip(xL,yL,area):
+
+			pylab.text(xcoord,
+						ycoord,
+						math.trunc(100.*areaVal / areaScalingFactor),
+						size=13,
+						horizontalalignment='center',
+						verticalalignment='center',
+						color='k') 
+
+		pylab.colorbar()
+		pylab.xlabel(xaxislabel,fontsize=16)
+		pylab.ylabel(yaxislabel,fontsize=16)
+
+		# Plot the y=x line
+
+		pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
+		pylab.xlabel(xaxislabel,fontsize=16)
+		pylab.ylabel(yaxislabel,fontsize=16)
+		pylab.text(1.5,1.2,'No-Change line',fontsize=12)
+
+
+		# Set the axis limits
+		
 	pylab.xlim(.5,5.5)
-	pylab.ylim(.5,5.5)
-
-	pylab.locator_params(axis = 'x', nbins = 6)
-	pylab.locator_params(axis = 'y', nbins = 6)
-
-	# Plot the y=x line
-
-	pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4)
-	pylab.xlabel(xaxislabel,fontsize=16)
-	pylab.ylabel(yaxislabel,fontsize=16)
-	pylab.text(1.2,1,'No-Change line',fontsize=12)
-
-
+	pylab.ylim(.5,5.5)			
 
 
 
@@ -268,83 +323,83 @@ def chooseData(dataSource = allData,
 	
 	return result
 
-def createFirasPlot(pairedQs,
-					course_interested,
-					export_filename):
+# def createFirasPlot(pairedQs,
+# 					course_interested,
+# 					export_filename):
 
-	for i,q in enumerate(pairedQs.iteritems()):
+# 	for i,q in enumerate(pairedQs.iteritems()):
 
-		subplot(1,3,i+1)
+# 		subplot(1,3,i+1)
 
-		# Choosing the data first
+# 		# Choosing the data first
 
-		A_B = chooseData(allData,
-						 courseList = courseList,
-						 course = course_interested,
-						 questionDict = questions,
-						 question = q[1][0])
+# 		A_B = chooseData(allData,
+# 						 courseList = courseList,
+# 						 course = course_interested,
+# 						 questionDict = questions,
+# 						 question = q[1][0])
 
-		B_A = chooseData(allData,
-						 courseList = courseList,
-						 course = course_interested,
-						 questionDict = questions,
-						 question = q[1][1])
+# 		B_A = chooseData(allData,
+# 						 courseList = courseList,
+# 						 course = course_interested,
+# 						 questionDict = questions,
+# 						 question = q[1][1])
 
-		# Filtering out data
-		A_B = A_B[A_B>0]
-		B_A = B_A[B_A>0]
+# 		# Filtering out data
+# 		A_B = A_B[A_B>0]
+# 		B_A = B_A[B_A>0]
 
-		gg = zip(A_B,B_A)
+# 		gg = zip(A_B,B_A)
 
-		xL = []
-		yL = []
-		area = [] 
-		colour = []
+# 		xL = []
+# 		yL = []
+# 		area = [] 
+# 		colour = []
 
-		for it in Counter(gg):
+# 		for it in Counter(gg):
 
-			xL.append(it[0])
-			yL.append(it[1])
-			area.append(1e4*Counter(gg)[it]/len(gg))
-			colour.append((it[0] + it[1]))
+# 			xL.append(it[0])
+# 			yL.append(it[1])
+# 			area.append(1e4*Counter(gg)[it]/len(gg))
+# 			colour.append((it[0] + it[1]))
 
-			text(it[0],it[1],
-				 math.trunc(round(100.*Counter(gg)[it]/len(gg),0)),
-				 size=13,horizontalalignment='center',verticalalignment='center',color='k')	
+# 			text(it[0],it[1],
+# 				 math.trunc(round(100.*Counter(gg)[it]/len(gg),0)),
+# 				 size=13,horizontalalignment='center',verticalalignment='center',color='k')	
 
-		sct = scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
-		sct.set_alpha(0.65)
+# 		sct = scatter(xL, yL, s=area, c = colour, linewidths=2, edgecolor='k',cmap='jet')
+# 		sct.set_alpha(0.65)
 
-		xlim(.5,5.5)
-		ylim(.5,5.5)
+# 		xlim(.5,5.5)
+# 		ylim(.5,5.5)
 
-		pyplot.locator_params(axis = 'x', nbins = 6)
-		pyplot.locator_params(axis = 'y', nbins = 6)
+# 		pyplot.locator_params(axis = 'x', nbins = 6)
+# 		pyplot.locator_params(axis = 'y', nbins = 6)
 
-		xlabel('{0}'.format(q[1][0]),size=16)
-		ylabel('{0}'.format(q[1][1]),size=16)
-		title('{0}'.format(q[0]),size=18)
+# 		xlabel('{0}'.format(q[1][0]),size=16)
+# 		ylabel('{0}'.format(q[1][1]),size=16)
+# 		title('{0}'.format(q[0]),size=18)
 		
-		pylab.suptitle(course_interested+'\n \n \n',size=24)
+# 		pylab.suptitle(course_interested+'\n \n \n',size=24)
 
-		if i >2:
-			text(6,4,'1 - Strongly disagree \n5- Strongly agree',size=13)
+# 		if i >2:
+# 			text(6,4,'1 - Strongly disagree \n5- Strongly agree',size=13)
 
-		savefig('/phd/TA/Year 3 - InterClass/python/export/Firas_plots.pdf')
+# 		savefig('/phd/TA/Year 3 - InterClass/python/export/Firas_plots.pdf')
 
-	pylab.tight_layout()	
-
-
-figsize(12,6)
-
-course_interested = 'Biol 121 Pre'
-
-pairedQs = {'Physics and Biology': ['P important for B','B important for P'],
-			'Biology and Chemistry': ['B important for C','C important for B'],
-			'Chemistry and Physics': ['C important for P','P important for C']}
-
-course_interested = 'Biol 121 Pre'
-createFirasPlot(pairedQs,course_interested,course_interested+'FirasPlot.pdf')
+# 	pylab.tight_layout()	
 
 
-"""
+# figsize(12,6)
+
+# course_interested = 'Biol 121 Pre'
+
+# pairedQs = {'Physics and Biology': ['P important for B','B important for P'],
+# 			'Biology and Chemistry': ['B important for C','C important for B'],
+# 			'Chemistry and Physics': ['C important for P','P important for C']}
+
+# course_interested = 'Biol 121 Pre'
+# createFirasPlot(pairedQs,course_interested,course_interested+'FirasPlot.pdf')
+
+
+# """
