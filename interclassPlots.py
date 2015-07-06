@@ -201,8 +201,8 @@ def determine_facecolor(score):
 	return fc
 
 def firasPlot(individualDataDict,
-			  yaxislabel,
 			  xaxislabel,
+			  yaxislabel,
 			  graphType=None,
 			  colormap = 'YlOrRd'):
 	'''This produces the bubble plots '''
@@ -216,9 +216,11 @@ def firasPlot(individualDataDict,
 
 	# Plot the y=x line
 
+	plt = pylab.subplot(111)
+
 	pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4,color='g')
-	pylab.xlabel(xaxislabel,fontsize=16)
-	pylab.ylabel(yaxislabel,fontsize=16)
+	pylab.xlabel(xaxislabel,fontsize=30)
+	pylab.ylabel(yaxislabel,fontsize=30)
 	pylab.text(1.5,1.2,'No-Change line',fontsize=12)
 
 	for it,val in individualDataDict.iteritems():
@@ -246,7 +248,7 @@ def firasPlot(individualDataDict,
 				pylab.text(coord[0],
 						   coord[1],
 						   val,
-						   size=13,
+						   size=16,
 						   horizontalalignment='center',
 						   verticalalignment='center',
 						   color='w')  		
@@ -273,7 +275,7 @@ def firasPlot(individualDataDict,
 			pylab.text(xcoord,
 						ycoord,
 						math.trunc(n),
-						size=13,
+						size=16,
 						horizontalalignment='center',
 						verticalalignment='center',
 						color='k') 
@@ -283,14 +285,14 @@ def firasPlot(individualDataDict,
 					 cmap=colormap)			
 
 		#pylab.colorbar()
-		pylab.xlabel(xaxislabel,fontsize=16)
-		pylab.ylabel(yaxislabel,fontsize=16)
+		pylab.xlabel(xaxislabel,fontsize=30)
+		pylab.ylabel(yaxislabel,fontsize=30)
 
 
 
 
 		# Set the axis limits
-		
+	plt.tick_params(axis='both', which='major', labelsize=16)
 	pylab.xlim(.5,5.5)
 	pylab.ylim(.5,5.5)			
 
