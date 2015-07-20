@@ -116,7 +116,7 @@ def loadExcelasDF(rawPath= None,
     """
     # Specify the rawPath of the csv files
     if rawPath is None:
-        rawPath = '/phd/TA/Year 3 - InterClass/python/raw/'
+        rawPath = '/Users/james/Documents/Coding/InterCLASS'
     
     # Initialize empty df 
     allData = pandas.DataFrame()    
