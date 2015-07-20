@@ -12,7 +12,7 @@ def arrowPlot(val,
 		plotTitle = filename
 
 	if rawPath is None:
-		rawPath = '/phd/TA/Year 3 - InterClass/python/export/arrowPlots/'
+		rawPath = '/Users/james/Documents/Coding/InterCLASS/export/arrowPlots/'
 
 	# These are the errors set up as strings
 
