@@ -125,7 +125,7 @@ def loadExcelasDF(rawPath= None,
     for fname in filenames:
 
         # Load in the dataframe from the csv file
-        df = pandas.io.excel.read_excel(rawpath+fname,sheetname) 
+        df = pandas.io.excel.read_excel(rawPath+fname,sheetname) 
     
         # Rename the student ID fileds
         df = renameFields(df)
