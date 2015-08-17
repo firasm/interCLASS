@@ -33,7 +33,8 @@ def renameFields(dataFrame,
                  origPhrases = None,
                  newPhrases = None):
     """
-    Purpose: This function replaces the provided original columns (origPhrases)with the provided phrases (newPhrases) in a Pandas data frame (dataFrame).
+    Purpose: This function replaces the provided original columns (origPhrases)with the provided 
+    phrases (newPhrases) in a Pandas data frame (dataFrame).
 
     If origPhrases is not provided, default values are provided based on experience
 
@@ -68,9 +69,12 @@ def checkQuestions(dataFrame,
                    questionDict,
                    fname):
     """
-    Purpose: This function checks the pandas data frame (dataFrame) to make sure that all the interCLASS question statements are stored correctly and in the same format. The function checks spelling, punctuation, capitalization. 
+    Purpose: This function checks the pandas data frame (dataFrame) to make sure that all the 
+    interCLASS question statements are stored correctly and in the same format. The function checks 
+    spelling, punctuation, capitalization. 
 
-    The questions are stored in questionDict, and the check works by trying to access dataFrame columns from a dictionary of questions (questionDict).
+    The questions are stored in questionDict, and the check works by trying to access dataFrame 
+    columns from a dictionary of questions (questionDict).
 
     Failed question statements are printed, and so is the filename (fname) for the offending excel file.
 
@@ -203,9 +207,11 @@ def makePlotDict(allData,
                  courseList):
 
     """
-    Purpose: This function takes a complete dataFrame (allData) and produces a ready-made dictionary (plotDict) that can be plotted or printed as needed.
+    Purpose: This function takes a complete dataFrame (allData) and produces a ready-made dictionary (plotDict) 
+    that can be plotted or printed as needed.
 
-    The function loops through the provided questions (questionDict) and courses (courseList) and stores the mean, standard error, and number of students
+    The function loops through the provided questions (questionDict) and courses (courseList) and stores 
+    the mean, standard error, and number of students
     """
     
     # Initializing the dictionary
@@ -236,7 +242,9 @@ def arrowPlotData(plotDict,
                   delta = None):
 
     """
-    Purpose: This function takes a ready-made dictionary (plotDict), and the courses of interest (desiredCourses), and the questions of interest (questionDictKeys), and returns two dictionaries that can be provided to arrowPlot to construct the arrowPlot
+    Purpose: This function takes a ready-made dictionary (plotDict), and the courses of interest 
+    (desiredCourses), and the questions of interest (questionDictKeys), and returns two dictionaries 
+    that can be provided to arrowPlot to construct the arrowPlot
 
     The delta flag allows you to create an arrow plot with the second course data subtracted from the first course.
     """
