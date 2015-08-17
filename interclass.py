@@ -288,19 +288,16 @@ def arrowPlotData(plotDict,
 
         return stats
 
-def individualStudents(allData,
-                       desiredCourses,
-                       questionValue,
-                       rawData = False):
 
+
+def studentsInBoth(allData,
+                   desiredCourses,
+                   question,
+                   raw = False):        
     """
-    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), and a single question (questionValue) to return the difference between invidual students as a dictionary
-
-    Notably, the function checks and uses only students that are present in both courses. At this stage, the differences are all provided and the dictionary keys are the pair of values '[-1.0, 1.0]' with the first value from the first course in desiredCourses and the second value from the second course in desiredCourses (i.e. Post - Pre)
-
-
+    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), 
+    and a single question (questionValue) to return the list of students in both courses 
     """
-    
     assert len(desiredCourses) == 2, 'Please make sure a pair of courses is provided'
     
     tmp = []
@@ -310,7 +307,7 @@ def individualStudents(allData,
         currD = allData[allData['Course']==c]        
 
         # Screening for empty numbers/blanks, to prevent nans
-        testDat = currD[questionValue]
+        testDat = currD[question]
         testDat = testDat[numpy.isfinite(testDat)]
 
         tmp.append(testDat)
@@ -322,6 +319,31 @@ def individualStudents(allData,
     
     # Get the ones that exist in both
     prePostStudents = list(set(preStudents) & set(postStudents))
+
+    # Return the tmp list (required for IndividualStudents function below)
+    if raw:
+        return prePostStudents, tmp
+
+    else:
+        return prePostStudents
+
+
+def individualStudents(allData,
+                       desiredCourses,
+                       question,
+                       rawData = False):
+
+    """
+    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), 
+    and a single question (questionValue) to return the difference between invidual students as a dictionary
+
+    Notably, the function checks and uses only students that are present in both courses. 
+    At this stage, the differences are all provided and the dictionary keys are the pair of values 
+    '[-1.0, 1.0]' with the first value from the first course in desiredCourses and the second value from the 
+    second course in desiredCourses (i.e. Post - Pre)
+    """
+    # Get the students in both courses using the helper function
+    prePostStudents,tmp = studentsInBoth(allData,desiredCourses,question,raw=True)
     
     # Initialize the comparisons dict
     comparisons = {}
