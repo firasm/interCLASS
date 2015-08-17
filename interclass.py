@@ -6,7 +6,28 @@ import math
 import numpy
 from collections import defaultdict
 
+def loadQuestions():
 
+    # Add some abbreviations for the questions to make it easier to access them without making mistkaes
+
+    questions = collections.OrderedDict()
+
+    questions.update({'B,C,P required': u'Concepts from biology, chemistry, and physics are all required to fully understand any of these disciplines individually.'})
+    questions.update({'Overlap interesting': u'I find the overlap between different branches of science (such as biology, chemistry, and physics) interesting.'})
+    questions.update({'Draw upon knowledge': u'When completing a task in the sciences I draw upon knowledge from more than one of biology, chemistry, and physics.'})
+    questions.update({'B important for P': u'Examples and concepts from biology are important when learning physics.'})
+    questions.update({'B important for C': u'Examples and concepts from biology are important when learning chemistry.'})
+    questions.update({'C important for B': u'Examples and concepts from chemistry are important when learning biology.'})
+    questions.update({'C important for P': u'Examples and concepts from chemistry are important when learning physics.'})
+    questions.update({'P important for B': u'Examples and concepts from physics are important when learning biology.'})
+    questions.update({'P important for C': u'Examples and concepts from physics are important when learning chemistry.'})
+
+    for shortq,longq in questions.iteritems():
+
+        print('{0} : {1}...'.format(shortq,longq[0:20]))
+
+
+    return questions
 
 def renameFields(dataFrame,
                  origPhrases = None,
@@ -108,7 +129,7 @@ def loadExcelasDF(rawPath= None,
                   filenames = None,
                   sheetname = 0,
                   scores = None,
-                  questionDict = None,
+                  removeStalwarts = None,
                   replaceLikert = False):
     """
     Purpose: This function loads provided excel files (filenames) as a dataFrame.
@@ -118,16 +139,28 @@ def loadExcelasDF(rawPath= None,
         rawPath = '/phd/TA/python/Year 3 - InterClass/raw/'
     
     # Initialize empty df 
-    allData = pandas.DataFrame()    
-    
+    allData = pandas.DataFrame()
+
+    # Initialize questions
+    questionDict = loadQuestions()
+    loadCols = questionDict.keys()
+    loadCols.append('Permission')
+    loadCols.append('StudentNumber')
+    loadCols.append('Course')
+
     # Iterate through all the filenames and append them to a single Data Frame    
     for fname in filenames:
 
         # Load in the dataframe from the csv file
-        df = pandas.io.excel.read_excel(rawPath+fname,sheetname) 
+        df = pandas.io.excel.read_excel(rawPath+fname,
+                                        sheetname) 
     
         # Rename the student ID fileds
         df = renameFields(df)
+
+        # Rename the Permission fileds
+        df = renameFields(df, origPhrases=['Authorization'],
+                              newPhrases=['Permission'])        
     
         # Check the questions for each df
         if questionDict is not None:
@@ -135,17 +168,35 @@ def loadExcelasDF(rawPath= None,
         else:
             print('Warning: questions have not been checked')
         
+        # Rename the question fields
+        df = renameFields(df,origPhrases = questionDict.values(),
+                             newPhrases = questionDict.keys())
+
+        # Add permissions with default 1 if does not exist
+
+        if 'Permission' not in df.columns:
+            df['Permission'] = 1
+            print('\t Added Permission fields \n')
+
         # Append them to one big dataframe
-        allData = allData.append(df)    
+        allData = allData.append(df[loadCols])    
         
     # Set the index of the dataframe to be StudentNumber
     allData.set_index('StudentNumber',inplace=True)
     
+    # Replace Likert scale with scores
     if replaceLikert:
-        # Replace Likert scale with scores
         allData = likertReplace(allData,scores=scores)
-        
-    return allData
+
+    # Replace Do not agrees with -1
+
+    allData = likertReplace(allData,'Do Not Agree',-1)
+
+    if removeStalwarts:
+        return allData[allData['Permission']>=0]
+
+    else: 
+        return allData        
 
 def makePlotDict(allData,
                  questionDict,
@@ -163,7 +214,7 @@ def makePlotDict(allData,
         plotDict[u] = {}
 
     # Filling the dictionary with mean, sem, N
-    for y,x in questionDict.iteritems():
+    for x,y in questionDict.iteritems():
         for c in courseList:
             currD = allData[allData['Course']==c]        
 
@@ -175,7 +226,7 @@ def makePlotDict(allData,
             m = round(scipy.stats.nanmean(testDat),2)
             s = round(scipy.stats.sem(testDat),2)
             n = len(testDat)
-            plotDict[y].update({c:[m,s,n]})
+            plotDict[x].update({c:[m,s,n]})
             
     return plotDict
 
