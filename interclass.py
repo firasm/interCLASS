@@ -23,7 +23,6 @@ def renameFields(dataFrame,
     Then, it is asserted that the length of newPhrases and origPhrases is
     the same, otherwise and error will be thrown.
     """
-
     
     if origPhrases is None:
         origPhrases = ['Please enter your 8 digit student ID number:',
@@ -35,7 +34,7 @@ def renameFields(dataFrame,
         newPhrases = ['StudentNumber']*len(origPhrases)
         
     elif len(newPhrases) != len(origPhrases):
-        newPhrases = [newPhrases]*4
+        newPhrases = [newPhrases]*len(origPhrases)
         
     assert len(newPhrases) == len(origPhrases),'Please input either one replacement, or match length of origPhrases'
         
