@@ -6,13 +6,36 @@ import math
 import numpy
 from collections import defaultdict
 
+def loadQuestions():
 
+    # Add some abbreviations for the questions to make it easier to access them without making mistkaes
+
+    questions = collections.OrderedDict()
+
+    questions.update({'B,C,P required': u'Concepts from biology, chemistry, and physics are all required to fully understand any of these disciplines individually.'})
+    questions.update({'Overlap interesting': u'I find the overlap between different branches of science (such as biology, chemistry, and physics) interesting.'})
+    questions.update({'Draw upon knowledge': u'When completing a task in the sciences I draw upon knowledge from more than one of biology, chemistry, and physics.'})
+    questions.update({'B important for P': u'Examples and concepts from biology are important when learning physics.'})
+    questions.update({'B important for C': u'Examples and concepts from biology are important when learning chemistry.'})
+    questions.update({'C important for B': u'Examples and concepts from chemistry are important when learning biology.'})
+    questions.update({'C important for P': u'Examples and concepts from chemistry are important when learning physics.'})
+    questions.update({'P important for B': u'Examples and concepts from physics are important when learning biology.'})
+    questions.update({'P important for C': u'Examples and concepts from physics are important when learning chemistry.'})
+
+    for shortq,longq in questions.iteritems():
+
+        print('{0} : {1}...'.format(shortq,longq[0:20]))
+
+
+    return questions
 
 def renameFields(dataFrame,
                  origPhrases = None,
                  newPhrases = None):
     """
     Purpose: This function replaces the provided original columns (origPhrases)with the provided phrases (newPhrases) in a Pandas data frame (dataFrame).
+    Purpose: This function replaces the provided original columns (origPhrases)with the provided 
+    phrases (newPhrases) in a Pandas data frame (dataFrame).
 
     If origPhrases is not provided, default values are provided based on experience
 
@@ -36,6 +59,7 @@ def renameFields(dataFrame,
         
     elif len(newPhrases) != len(origPhrases):
         newPhrases = [newPhrases]*4
+        newPhrases = [newPhrases]*len(origPhrases)
         
     assert len(newPhrases) == len(origPhrases),'Please input either one replacement, or match length of origPhrases'
         
@@ -49,8 +73,12 @@ def checkQuestions(dataFrame,
                    fname):
     """
     Purpose: This function checks the pandas data frame (dataFrame) to make sure that all the interCLASS question statements are stored correctly and in the same format. The function checks spelling, punctuation, capitalization. 
+    Purpose: This function checks the pandas data frame (dataFrame) to make sure that all the 
+    interCLASS question statements are stored correctly and in the same format. The function checks 
+    spelling, punctuation, capitalization. 
 
-    The questions are stored in questionDict, and the check works by trying to access dataFrame columns from a dictionary of questions (questionDict).
+    The questions are stored in questionDict, and the check works by trying to access dataFrame 
+    columns from a dictionary of questions (questionDict).
 
     Failed question statements are printed, and so is the filename (fname) for the offending excel file.
 
@@ -109,7 +137,7 @@ def loadExcelasDF(rawPath= None,
                   filenames = None,
                   sheetname = 0,
                   scores = None,
-                  questionDict = None,
+                  removeStalwarts = None,
                   replaceLikert = False):
     """
     Purpose: This function loads provided excel files (filenames) as a dataFrame.
@@ -119,16 +147,28 @@ def loadExcelasDF(rawPath= None,
         rawPath = '/Users/james/Documents/Coding/InterCLASS'
     
     # Initialize empty df 
-    allData = pandas.DataFrame()    
-    
+    allData = pandas.DataFrame()
+
+    # Initialize questions
+    questionDict = loadQuestions()
+    loadCols = questionDict.keys()
+    loadCols.append('Permission')
+    loadCols.append('StudentNumber')
+    loadCols.append('Course')
+
     # Iterate through all the filenames and append them to a single Data Frame    
     for fname in filenames:
 
         # Load in the dataframe from the csv file
-        df = pandas.io.excel.read_excel(rawPath+fname,sheetname) 
+        df = pandas.io.excel.read_excel(rawPath+fname,
+                                        sheetname) 
     
         # Rename the student ID fileds
         df = renameFields(df)
+
+        # Rename the Permission fileds
+        df = renameFields(df, origPhrases=['Authorization'],
+                              newPhrases=['Permission'])        
     
         # Check the questions for each df
         if questionDict is not None:
@@ -136,26 +176,46 @@ def loadExcelasDF(rawPath= None,
         else:
             print('Warning: questions have not been checked')
         
+        # Rename the question fields
+        df = renameFields(df,origPhrases = questionDict.values(),
+                             newPhrases = questionDict.keys())
+
+        # Add permissions with default 1 if does not exist
+
+        if 'Permission' not in df.columns:
+            df['Permission'] = 1
+            print('\t Added Permission fields \n')
+
         # Append them to one big dataframe
-        allData = allData.append(df)    
+        allData = allData.append(df[loadCols])    
         
     # Set the index of the dataframe to be StudentNumber
     allData.set_index('StudentNumber',inplace=True)
     
+    # Replace Likert scale with scores
     if replaceLikert:
-        # Replace Likert scale with scores
         allData = likertReplace(allData,scores=scores)
-        
-    return allData
+
+    # Replace Do not agrees with -1
+
+    allData = likertReplace(allData,'Do Not Agree',-1)
+
+    if removeStalwarts:
+        return allData[allData['Permission']>=0]
+
+    else: 
+        return allData        
 
 def makePlotDict(allData,
                  questionDict,
                  courseList):
 
     """
-    Purpose: This function takes a complete dataFrame (allData) and produces a ready-made dictionary (plotDict) that can be plotted or printed as needed.
+    Purpose: This function takes a complete dataFrame (allData) and produces a ready-made dictionary (plotDict) 
+    that can be plotted or printed as needed.
 
-    The function loops through the provided questions (questionDict) and courses (courseList) and stores the mean, standard error, and number of students
+    The function loops through the provided questions (questionDict) and courses (courseList) and stores 
+    the mean, standard error, and number of students
     """
     
     # Initializing the dictionary
@@ -164,7 +224,7 @@ def makePlotDict(allData,
         plotDict[u] = {}
 
     # Filling the dictionary with mean, sem, N
-    for y,x in questionDict.iteritems():
+    for x,y in questionDict.iteritems():
         for c in courseList:
             currD = allData[allData['Course']==c]        
 
@@ -176,7 +236,7 @@ def makePlotDict(allData,
             m = round(scipy.stats.nanmean(testDat),2)
             s = round(scipy.stats.sem(testDat),2)
             n = len(testDat)
-            plotDict[y].update({c:[m,s,n]})
+            plotDict[x].update({c:[m,s,n]})
             
     return plotDict
 
@@ -186,7 +246,9 @@ def arrowPlotData(plotDict,
                   delta = None):
 
     """
-    Purpose: This function takes a ready-made dictionary (plotDict), and the courses of interest (desiredCourses), and the questions of interest (questionDictKeys), and returns two dictionaries that can be provided to arrowPlot to construct the arrowPlot
+    Purpose: This function takes a ready-made dictionary (plotDict), and the courses of interest 
+    (desiredCourses), and the questions of interest (questionDictKeys), and returns two dictionaries 
+    that can be provided to arrowPlot to construct the arrowPlot
 
     The delta flag allows you to create an arrow plot with the second course data subtracted from the first course.
     """
@@ -230,19 +292,16 @@ def arrowPlotData(plotDict,
 
         return stats
 
-def individualStudents(allData,
-                       desiredCourses,
-                       questionValue,
-                       rawData = False):
 
+
+def studentsInBoth(allData,
+                   desiredCourses,
+                   question,
+                   raw = False):        
     """
-    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), and a single question (questionValue) to return the difference between invidual students as a dictionary
-
-    Notably, the function checks and uses only students that are present in both courses. At this stage, the differences are all provided and the dictionary keys are the pair of values '[-1.0, 1.0]' with the first value from the first course in desiredCourses and the second value from the second course in desiredCourses (i.e. Post - Pre)
-
-
+    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), 
+    and a single question (questionValue) to return the list of students in both courses 
     """
-    
     assert len(desiredCourses) == 2, 'Please make sure a pair of courses is provided'
     
     tmp = []
@@ -252,7 +311,7 @@ def individualStudents(allData,
         currD = allData[allData['Course']==c]        
 
         # Screening for empty numbers/blanks, to prevent nans
-        testDat = currD[questionValue]
+        testDat = currD[question]
         testDat = testDat[numpy.isfinite(testDat)]
 
         tmp.append(testDat)
@@ -264,6 +323,31 @@ def individualStudents(allData,
     
     # Get the ones that exist in both
     prePostStudents = list(set(preStudents) & set(postStudents))
+
+    # Return the tmp list (required for IndividualStudents function below)
+    if raw:
+        return prePostStudents, tmp
+
+    else:
+        return prePostStudents
+
+
+def individualStudents(allData,
+                       desiredCourses,
+                       question,
+                       rawData = False):
+
+    """
+    Purpose: This function takes a complete dataFrame (allData), courses of interest (desiredCourses), 
+    and a single question (questionValue) to return the difference between invidual students as a dictionary
+
+    Notably, the function checks and uses only students that are present in both courses. 
+    At this stage, the differences are all provided and the dictionary keys are the pair of values 
+    '[-1.0, 1.0]' with the first value from the first course in desiredCourses and the second value from the 
+    second course in desiredCourses (i.e. Post - Pre)
+    """
+    # Get the students in both courses using the helper function
+    prePostStudents,tmp = studentsInBoth(allData,desiredCourses,question,raw=True)
     
     # Initialize the comparisons dict
     comparisons = {}

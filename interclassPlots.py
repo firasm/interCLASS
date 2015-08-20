@@ -14,6 +14,7 @@ def arrowPlot(val,
 	if rawPath is None:
 		rawPath = '/Users/james/Documents/Coding/InterCLASS/export/arrowPlots/'
 
+
 	# These are the errors set up as strings
 
 	if valerr is None:
