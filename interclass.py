@@ -11,16 +11,17 @@ def loadQuestions():
     # Add some abbreviations for the questions to make it easier to access them without making mistkaes
 
     questions = collections.OrderedDict()
-
-    questions.update({'B,C,P required': u'Concepts from biology, chemistry, and physics are all required to fully understand any of these disciplines individually.'})
-    questions.update({'Overlap interesting': u'I find the overlap between different branches of science (such as biology, chemistry, and physics) interesting.'})
-    questions.update({'Draw upon knowledge': u'When completing a task in the sciences I draw upon knowledge from more than one of biology, chemistry, and physics.'})
-    questions.update({'B important for P': u'Examples and concepts from biology are important when learning physics.'})
-    questions.update({'B important for C': u'Examples and concepts from biology are important when learning chemistry.'})
-    questions.update({'C important for B': u'Examples and concepts from chemistry are important when learning biology.'})
-    questions.update({'C important for P': u'Examples and concepts from chemistry are important when learning physics.'})
-    questions.update({'P important for B': u'Examples and concepts from physics are important when learning biology.'})
-    questions.update({'P important for C': u'Examples and concepts from physics are important when learning chemistry.'})
+    
+    questions.update({'B,C,P required': u'1. Concepts from biology, chemistry, and physics are all required to fully understand any of these disciplines individually.'})
+    questions.update({'Overlap interesting': u'2. I find the overlap between different branches of science (such as biology, chemistry, and physics) interesting.'})
+    questions.update({'Draw upon knowledge': u'3. When completing a task in the sciences I draw upon knowledge from more than one of biology, chemistry, and physics.'})
+    questions.update({'Be a Scientist': u'4. You can be a scientist without having scientific knowledge outside of your discipline.'})
+    questions.update({'B important for P': u'5. Examples and concepts from biology are important when learning physics.'})
+    questions.update({'B important for C': u'6. Examples and concepts from biology are important when learning chemistry.'})
+    questions.update({'C important for B': u'7. Examples and concepts from chemistry are important when learning biology.'})
+    questions.update({'C important for P': u'8. Examples and concepts from chemistry are important when learning physics.'})
+    questions.update({'P important for B': u'9. Examples and concepts from physics are important when learning biology.'})
+    questions.update({'P important for C': u'10. Examples and concepts from physics are important when learning chemistry.'})
 
     for shortq,longq in questions.iteritems():
 
@@ -47,10 +48,9 @@ def renameFields(dataFrame,
     """
     
     if origPhrases is None:
-        origPhrases = ['Please enter your 8 digit student ID number:',
-                       'Please enter your student ID number (8 digits)',
-                       'Username',
-                       'Student ID']
+        origPhrases = ['Please enter your UBC student number:',
+                       'FakeStudentNumber:',
+                       'Please enter your student number (ID):']
         
     if newPhrases is None:
         newPhrases = ['StudentNumber']*len(origPhrases)
@@ -148,9 +148,8 @@ def loadExcelasDF(rawPath= None,
     # Initialize questions
     questionDict = loadQuestions()
     loadCols = questionDict.keys()
-    loadCols.append('Permission')
     loadCols.append('StudentNumber')
-    loadCols.append('Course')
+    loadCols.append('Collector')
 
     # Iterate through all the filenames and append them to a single Data Frame    
     for fname in filenames:
@@ -163,8 +162,8 @@ def loadExcelasDF(rawPath= None,
         df = renameFields(df)
 
         # Rename the Permission fileds
-        df = renameFields(df, origPhrases=['Authorization'],
-                              newPhrases=['Permission'])        
+        #df = renameFields(df, origPhrases=['Authorization'],
+        #                      newPhrases=['Permission'])        
     
         # Check the questions for each df
         if questionDict is not None:
@@ -178,9 +177,9 @@ def loadExcelasDF(rawPath= None,
 
         # Add permissions with default 1 if does not exist
 
-        if 'Permission' not in df.columns:
-            df['Permission'] = 1
-            print('\t Added Permission fields \n')
+        #if 'Permission' not in df.columns:
+        #    df['Permission'] = 1
+        #    print('\t Added Permission fields \n')
 
         # Append them to one big dataframe
         allData = allData.append(df[loadCols])    
@@ -222,7 +221,7 @@ def makePlotDict(allData,
     # Filling the dictionary with mean, sem, N
     for x,y in questionDict.iteritems():
         for c in courseList:
-            currD = allData[allData['Course']==c]        
+            currD = allData[allData['Collector']==c]        
 
             # Screening for empty numbers/blanks, to prevent nans
             testDat = currD[x]

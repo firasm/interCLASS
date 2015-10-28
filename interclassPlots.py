@@ -181,11 +181,11 @@ def determine_facecolor(score):
 	## On a -1,0,1 point scale
 
 	fc ='grey'
-	if score < -0.1:
+	if score < 45:
 		fc = 'red'
-	elif score>=-0.1 and score <0.1:
+	elif 45 <= score < 70:
 		fc = 'orange'
-	elif score >=0.1:
+	elif score >=70:
 		fc ='green'
 
 	## On a 5 point scale
