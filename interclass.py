@@ -130,9 +130,8 @@ def likertReplace(dataFrame,
     
     return dataFrame
     
-def loadExcelasDF(rawPath= None,
+def loadCSV(rawPath= None,
                   filenames = None,
-                  sheetname = 0,
                   scores = None,
                   removeStalwarts = None,
                   replaceLikert = False):
@@ -156,8 +155,7 @@ def loadExcelasDF(rawPath= None,
     for fname in filenames:
 
         # Load in the dataframe from the csv file
-        df = pandas.io.excel.read_excel(rawPath+fname,
-                                        sheetname) 
+        df = pandas.read_csv(rawPath+fname) 
     
         # Rename the student ID fileds
         df = renameFields(df)
@@ -304,7 +302,7 @@ def studentsInBoth(allData,
     
     # Populate tmp
     for c in desiredCourses:
-        currD = allData[allData['Course']==c]        
+        currD = allData[allData['Collector']==c]        
 
         # Screening for empty numbers/blanks, to prevent nans
         testDat = currD[question]
