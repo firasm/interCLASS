@@ -50,7 +50,8 @@ def renameFields(dataFrame,
     if origPhrases is None:
         origPhrases = ['Please enter your UBC student number:',
                        'FakeStudentNumber:',
-                       'Please enter your student number (ID):']
+                       'Please enter your student number (ID):',
+                       'What is your Student Number']
         
     if newPhrases is None:
         newPhrases = ['StudentNumber']*len(origPhrases)
