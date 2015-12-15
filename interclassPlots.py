@@ -6,7 +6,8 @@ def arrowPlot(val,
 			  valerr=None,
 			  plotTitle=None,
 			  rawPath=None,
-			  filename='template.png'):
+			  filename='template.png',
+			  deltaFlag = False):
 
 	if plotTitle is None:
 		plotTitle = filename
@@ -126,38 +127,38 @@ def arrowPlot(val,
 	# Creating the annotations on the arrows
 
 	# Bio to Physics
-	props2 = dict(boxstyle='round', color=determine_facecolor(val[0]),alpha=1)
+	props2 = dict(boxstyle='round', color=determine_facecolor(val[0],deltaFlag),alpha=1)
 	ax.text(0.59,0.63,str(val[0])+stringError[0],
 		size=14,ha='center', va='center',fontsize=14,
 		verticalalignment='top', bbox=props2,color='w',transform=ax.transAxes)
 
 	# Bio to Chem
-	props1 = dict(boxstyle='round', color=determine_facecolor(val[1]),alpha=1)
+	props1 = dict(boxstyle='round', color=determine_facecolor(val[1],deltaFlag),alpha=1)
 	ax.text(0.41,0.63,str(val[1])+stringError[1],
 		size=14,ha='center', va='center', fontsize=14,
 		verticalalignment='top', bbox=props1,color='w',transform=ax.transAxes)
 
 	# Chem to Bio
-	props0 = dict(boxstyle='round', color=determine_facecolor(val[2]),alpha=1)
+	props0 = dict(boxstyle='round', color=determine_facecolor(val[2],deltaFlag),alpha=1)
 	ax.text(0.32,0.7,str(val[2])+stringError[2],
 		size=14,ha='center', va='center', fontsize=14,
 		verticalalignment='top', bbox=props0,color='w',transform=ax.transAxes)
 
 	# Chem to Physics
-	props5 = dict(boxstyle='round', color=determine_facecolor(val[3]),alpha=1)
+	props5 = dict(boxstyle='round', color=determine_facecolor(val[3],deltaFlag),alpha=1)
 	ax.text(0.51,0.3,str(val[3])+stringError[3],
 		size=14,ha='center', va='center', fontsize=14,
 		verticalalignment='top', bbox=props5,color='w',transform=ax.transAxes)
 
 
 	# Physics to Bio
-	props3 = dict(boxstyle='round', color=determine_facecolor(val[4]),alpha=1)
+	props3 = dict(boxstyle='round', color=determine_facecolor(val[4],deltaFlag),alpha=1)
 	ax.text(0.68,0.7,str(val[4])+stringError[4],
 		size=14,ha='center', va='center', fontsize=14,
 		verticalalignment='top', bbox=props3,color='w',transform=ax.transAxes)
 
 	# Physics to Chem
-	props4 = dict(boxstyle='round', color=determine_facecolor(val[5]),alpha=1)
+	props4 = dict(boxstyle='round', color=determine_facecolor(val[5],deltaFlag),alpha=1)
 	ax.text(0.51,0.52,str(val[5])+stringError[5],
 		size=14,ha='center', va='center', fontsize=14,
 		verticalalignment='top', bbox=props4,color='w',transform=ax.transAxes)
@@ -167,7 +168,7 @@ def arrowPlot(val,
 	pylab.axis('off')
 	pylab.title(plotTitle, fontsize=20)
 
-	pylab.savefig(rawPath+filename,dpi=300,transparent=True)
+	pylab.savefig(rawPath+filename,dpi=300,bbox_inches='tight',transparent=True)
 	pylab.close()
 
 	if valerr is None:
@@ -176,29 +177,29 @@ def arrowPlot(val,
 		print('Arrow plot with error bars saved in file: "{0}.png"'.format(filename))
 
 
-def determine_facecolor(score):
+def determine_facecolor(score,deltaFlag):
 
-	## On a -1,0,1 point scale
+	if deltaFlag:
 
-	fc ='grey'
-	if score < 45:
-		fc = 'red'
-	elif 45 <= score < 70:
-		fc = 'orange'
-	elif score >=70:
-		fc ='green'
+		fc ='grey'
+		if score < 0:
+			fc = 'red'
+		elif 0 <= score < 20:
+			fc = 'orange'
+		elif score >=20:
+			fc ='green'		
 
-	## On a 5 point scale
-	
-	#fc ='grey'
-	#if score < 3.2:
-	#	fc = 'red'
-	#elif score>=3.2 and score <4.2:
-	#	fc = 'orange'
-	#elif score >=4.2:
-	#	fc ='green'
+	else:
 
-	return fc
+		fc ='grey'
+		if score < 45:
+			fc = 'red'
+		elif 45 <= score < 70:
+			fc = 'orange'
+		elif score >=70:
+			fc ='green'
+
+	return fc	
 
 def firasPlot(individualDataDict,
 			  xaxislabel,
