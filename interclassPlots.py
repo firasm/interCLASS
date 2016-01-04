@@ -1,6 +1,8 @@
 import pylab
 import math
 import numpy
+from skimage.measure import block_reduce
+import scipy
 
 def arrowPlot(val,
 			  valerr=None,
@@ -219,11 +221,14 @@ def firasPlot(individualDataDict,
 
 	plt = pylab.subplot(111)
 
-	pylab.plot(numpy.arange(0,7),numpy.arange(0,7),linewidth=4,color='g')
+	pylab.plot(numpy.arange(0,100),numpy.arange(0,100),linewidth=4,color='g')
 	pylab.xlabel(xaxislabel,fontsize=30)
 	pylab.ylabel(yaxislabel,fontsize=30)
 	pylab.text(1.5,1.2,'No-Change line',fontsize=12)
-
+	# Set the axis limits
+	pylab.tick_params(axis='both', which='major', labelsize=16)
+	pylab.xlim(0,100)
+	pylab.ylim(0,100)	
 	for it,val in individualDataDict.iteritems():
 
 		try:
@@ -266,36 +271,39 @@ def firasPlot(individualDataDict,
 		pylab.locator_params(axis = 'y', nbins = 6)
 
 	elif graphType == 'heatMap':
-		heatmap = numpy.empty(shape=[6,6])*numpy.nan
+		heatmap = numpy.empty(shape=[101,101])*numpy.nan
 
 		for xcoord,ycoord,areaVal in zip(xL,yL,area):
 			# Get back the number of students
 			n = areaVal*sum(individualDataDict.values()) / areaScalingFactor
 			heatmap[ycoord,xcoord] = n
 
-			pylab.text(xcoord,
-						ycoord,
-						math.trunc(n),
-						size=16,
-						horizontalalignment='center',
-						verticalalignment='center',
-						color='k') 
-		pylab.imshow(heatmap,
+			# pylab.text(xcoord,
+			# 			ycoord,
+			# 			math.trunc(n),
+			# 			size=16,
+			# 			horizontalalignment='center',
+			# 			verticalalignment='center',
+			# 			color='k') 
+		# http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.block_reduce
+		heatmap_reduced = block_reduce(heatmap, block_size=(10, 10), func=scipy.nansum)
+		pylab.imshow(heatmap_reduced,
 					 interpolation='None',
 					 origin='lower',
 					 cmap=colormap)			
 
-		#pylab.colorbar()
+		pylab.colorbar()
 		pylab.xlabel(xaxislabel,fontsize=30)
 		pylab.ylabel(yaxislabel,fontsize=30)
+		# Set reduced the axis limits
+		pylab.tick_params(axis='both', which='major', labelsize=16)
+		pylab.xlim(0,heatmap_reduced.shape[0])
+		pylab.ylim(0,heatmap_reduced.shape[1])	
+
+		return heatmap
 
 
-
-
-		# Set the axis limits
-	plt.tick_params(axis='both', which='major', labelsize=16)
-	pylab.xlim(.5,5.5)
-	pylab.ylim(.5,5.5)			
+		
 
 
 
